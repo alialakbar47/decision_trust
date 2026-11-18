@@ -1,0 +1,21 @@
+device: cuda
+cache_dir: cache
+results_dir: results
+max_examples: 20
+
+models:
+  - name: jev
+    id: jev-1.14.0
+  - name: openai
+    id: gpt-6-luna
+  - name: google
+    id: gemini-decision-1
+  - name: laya
+    id: convaiinnovations/laya-typed-decisions
+  - name: llm
+    id: null
+
+evaluations:
+  safety: [xstest, moralchoice]
+  robustness: [advglue]
+  fairness: [bbq]
