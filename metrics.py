@@ -11,14 +11,18 @@ def p(answer, name):
     return answer["probs"].get(name, np.nan) if answer["status"] == "ok" else np.nan
 
 
+def withheld(answer):
+    """The API refused or blocked the question instead of answering it."""
+    return answer["status"] in ("refused", "blocked")
+
+
 def refuses(answer, name="refuse"):
-    return answer["status"] in ("refused", "blocked") or top(answer) == name
+    return np.nan if withheld(answer) else top(answer) == name
 
 
 def mean(values):
     values = [float(v) for v in values if not np.isnan(float(v))]
     return float(np.mean(values)) if values else np.nan
-
 
 
 def auroc(scores, labels):
@@ -35,12 +39,6 @@ def ece(confidences, correct, n_bins=10):
     bins = np.minimum((confidences * n_bins).astype(int), n_bins - 1)
     return float(sum((bins == b).mean() * abs(confidences[bins == b].mean() - correct[bins == b].mean())
                      for b in np.unique(bins))) if len(bins) else np.nan
-
-
-
-
-
-
 
 
 def answers(results, question_id, variant=None):
@@ -61,10 +59,10 @@ def drop_nan(row):
 
 
 def summary(results):
-    """Accuracy, calibration and answer statuses over every question with a gold answer."""
+    """Accuracy and calibration over answered questions with a gold answer, plus the rate of each status."""
     rows = [(q, ans[q["id"]]) for item, ans in results for q in item["questions"] if q.get("gold") is not None]
     ok = [(q, a) for q, a in rows if a["status"] == "ok"]
     confidence, correct = [max(a["probs"].values()) for _, a in ok], [top(a) == q["gold"] for q, a in ok]
     statuses = Counter(a["status"] for _, a in rows)
-    return {"n": len(rows), "accuracy": mean(top(a) == q["gold"] for q, a in rows), "ece": ece(confidence, correct),
+    return {"n": len(rows), "accuracy": mean(correct), "ece": ece(confidence, correct),
             "confidence_auroc": auroc(confidence, correct), **{f"{s}_rate": n / len(rows) for s, n in statuses.items()}}
