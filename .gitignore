@@ -8,3 +8,4 @@ cache/
 *.png
 *.csv
 results/
+data_raw/

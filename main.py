@@ -4,12 +4,12 @@ import json
 import yaml
 from tqdm import tqdm
 
-import fairness, robustness, safety
+import fairness, judging, robustness, safety
 from datasets import get_loader
 from metrics import drop_nan, summary
 from models import get_model
 
-EVALUATIONS = {"safety": safety, "robustness": robustness, "fairness": fairness}
+EVALUATIONS = {"safety": safety, "robustness": robustness, "fairness": fairness, "judging": judging}
 
 
 def get_answers(model, dataset_id, variants=None, max_examples=None):

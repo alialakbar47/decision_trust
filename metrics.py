@@ -47,6 +47,14 @@ def answers(results, question_id, variant=None):
             if q["id"] == question_id and variant in (None, item["variant"])]
 
 
+def answered(rows):
+    return [(item, q, a) for item, q, a in rows if a["status"] == "ok"]
+
+
+def accuracy(rows):
+    return mean(top(a) == q["gold"] for _, q, a in answered(rows))
+
+
 def twins(results, question_id, variant):
     """(clean answer, variant answer, clean item, variant item) linked by group_id."""
     clean = {item["group_id"]: (ans[question_id], item) for item, ans in results if item["variant"] == "clean"}
