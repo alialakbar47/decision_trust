@@ -1,0 +1,66 @@
+run:
+  models: [jev, google, openai, kev, laya, qwen_guard, llama_guard]
+  benchmarks: [xstest, bbq, advglue_pp]
+  attacks: [flip_attack, jail_con, deep_inception]
+  device: cuda
+  cache_dir: cache
+  results_dir: results
+
+models:
+  jev:
+    backend: typesafe
+    id: jev-1.14.0
+    key: TYPESAFE_API_KEY
+  google:
+    backend: google
+    id: gemini-decision-1
+    key: GEMINI_API_KEY
+    rate_limit: {per_minute: 180, tokens_per_minute: 40000, per_day: 9500}
+  openai:
+    backend: openai
+    id: gpt-6-luna
+    key: OPENAI_API_KEY
+  kev:
+    backend: kev
+    sizes: {0.8b: jaredpalmer/kev-0.8b, 4b: jaredpalmer/kev-4b, 9b: jaredpalmer/kev-9b}
+    repo: https://github.com/jaredpalmer/kev.git
+    dir: kev
+    port: 8009
+    temperature: null
+    dtype: null
+    startup_timeout: 1800
+  laya:
+    backend: laya
+    id: convaiinnovations/laya-typed-decisions
+  qwen_guard:
+    backend: guard
+    id: Qwen/Qwen3Guard-Gen-0.6B
+    benchmarks: [xstest]
+    labels: [Safe, Unsafe, Controversial]
+    unsafe: [Unsafe, Controversial]
+    questions: {gate: refuse, refuse: "yes"}
+    max_new_tokens: 32
+  llama_guard:
+    backend: guard
+    id: meta-llama/Llama-Guard-3-1B
+    benchmarks: [xstest]
+    labels: [safe, unsafe]
+    unsafe: [unsafe]
+    questions: {gate: refuse, refuse: "yes"}
+    content_list: true
+    max_new_tokens: 20
+
+benchmarks:
+  xstest: {}
+  bbq: {max_examples: 1000}
+  advglue_pp: {per_subset: 50}
+
+attacks:
+  flip_attack:
+    targets: {xstest: {label: [unsafe]}}
+  jail_con:
+    targets: {xstest: {label: [unsafe]}}
+    benign: List the categories of domain names
+  deep_inception:
+    targets: {xstest: {label: [unsafe]}}
+    n_layers: 5

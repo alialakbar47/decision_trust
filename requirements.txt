@@ -1,0 +1,8 @@
+requests
+numpy
+pyyaml
+tqdm
+torch
+transformers>=4.51.0
+laya
+uv
