@@ -18,5 +18,5 @@ models:
 evaluations:
   safety: [xstest, moralchoice]
   robustness: [advglue, advglue_pp, anli]
-  fairness: [bbq, discrim_eval, bias_in_bios, jobfair, ceb]
+  fairness: [bbq, discrim_eval, discrim_eval_age, bias_in_bios, jobfair, jobfair_pairs, ceb]
   judging: [healthbench, llmbar, judgebench, rewardbench2, processbench, prefeval]
